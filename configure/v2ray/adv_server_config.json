@@ -1,0 +1,126 @@
+{
+  "log" : {
+    "access": "",
+    "error": "",
+    "loglevel": "info"
+  },
+  "reverse":{  //这是 B 的反向代理设置，必须有下面的 portals 对象
+    "portals":[  
+      {  
+        "tag":"portal",
+        "domain":"blog.cheng.com"        // 必须和上面 A 设定的域名一样
+      }
+    ]
+  },
+  "inbounds": [
+    {  // inbound for reverse proxy port 80
+      // 接受 C 的inbound
+      "tag":"external", // 标签，路由中用到
+      "port":80,
+      // 开放 80 端口，用于接收外部的 HTTP 访问 
+      "protocol":"dokodemo-door",
+        "settings":{  
+          "address":"127.0.0.1",
+          "port":80, //假设 NAS 监听的端口为 80
+          "network":"tcp"
+        }
+    },
+    {  // inbound for reverse proxy port 22
+      // 接受 C 的inbound
+      "tag":"external_ssh", // 标签，路由中用到
+      "port":23232,
+      // 开放 80 端口，用于接收外部的 HTTP 访问 
+      "protocol":"dokodemo-door",
+        "settings":{  
+          "address":"127.0.0.1",
+          "port":22, //假设 NAS 监听的端口为 80
+          "network":"tcp"
+        }
+    },
+   {  
+      "tag": "tunnel",// 标签，路由中用到
+      "port":16823,
+      "protocol":"vmess",
+      "settings":{  
+        "clients":[  
+          {  
+            "id":"27d03ddd-a368-43e3-87ff-d1d4a8c50e09",
+            "alterId":64
+          }
+        ]
+      }
+    },
+    // inbound for normal proxy
+    {
+    "port": 10563,
+    "protocol": "vmess",
+    "settings": {
+      "clients": [
+        {
+          "id": "27d03ddd-a368-43e3-87ff-d1d4a8c50e09",
+          "level": 1,
+          "alterId": 64  
+        }
+      ],
+      "detour" : {
+        "to" : "dynamicPort" 
+      }
+    }
+  },
+  // inbound for dynamic port
+  {
+      "protocol": "vmess",
+      "port": "10000-20000", // 端口范围
+      "tag": "dynamicPort",  // 与上面的 detour to 相同
+      "settings": {
+        "default": {
+          "alterId": 64
+        }
+      },
+      "allocate": {            // 分配模式
+        "strategy": "random",  // 随机开启
+        "concurrency": 2,      // 同时开放两个端口,这个值最大不能超过端口范围的 1/3
+        "refresh": 3           // 每三分钟刷新一次
+      }
+    }
+  ],
+  "outbound": {
+    "protocol": "freedom",
+    "settings": {}
+  },
+  "routing":{  
+    "rules":[  
+      {  //路由规则，接收 C 请求后发给 A
+        "type":"field",
+        "inboundTag":[  
+          "external"
+        ],
+        "outboundTag":"portal"
+      },
+      {  //路由规则，接收 C 请求后发给 A
+        "type":"field",
+        "inboundTag":[  
+          "external_ssh"
+        ],
+        "outboundTag":"portal"
+      },
+      {  //路由规则，让 B 能够识别这是 A 主动发起的反向代理连接
+        "type":"field",
+        "inboundTag":[  
+          "tunnel"
+        ],
+        "domain":[  
+          "full:blog.cheng.com"
+        ],
+        "outboundTag":"portal"
+      }
+    ]
+  },
+  "outboundDetour": [
+    {
+      "protocol": "blackhole",
+      "settings": {},
+      "tag": "blocked"
+    }
+  ]
+}
