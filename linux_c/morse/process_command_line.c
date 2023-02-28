@@ -40,12 +40,12 @@
 void display_help(void)
 {
     printf("Morse may be called with command line options\n\n");
-    printf("    -e encode morse code from ascii");
-    printf("    -d deconde morse code to ascii");
+    printf("    -e encode morse code from ascii\n");
+    printf("    -d deconde morse code to ascii\n");
     printf("    -f <file_name> Sets the text file. It could be normal ascii file(encode, with -e) or morse code text file(with -d)  File paths are allowed (expected).\n");
     printf("    -s <msg> Sets the input string to be encoded or decode with Morse code. \n");
     printf("      -h or -H displays this text.\n\n");
-    printf(" \"$ morse -tS -f example.txt\"\n");
+    printf(" \"$ morse -e -f example.txt\"\n");
     printf("\n\n");
     return;
 }
@@ -58,11 +58,12 @@ void process_command_line(int argc, char *argv[], struct start_options *options)
     // put ':' in the starting of the 
     // string so that program can  
     //distinguish between '?' and ':'  
-    while((opt = getopt(argc, argv, ":def:hs:")) != -1)  
+    while((opt = getopt(argc, argv, ":def:hHs:")) != -1)  
     {  
         switch(opt)  
         {  
             case 'h':
+            case 'H':
                 display_help();
                 exit(-2);
                 break;
@@ -102,8 +103,10 @@ void process_command_line(int argc, char *argv[], struct start_options *options)
      * Some final checks, file name must be set or it's an error, 
      * Farnsworth timing only used below 18 WPM
      */
-    if (options->filename == NULL && options->message == NULL){
-        printf("A ascii file with -f or a string with -s is need\n");
+    if (options->filename == NULL 
+        || options->message == NULL
+        || options->mode == MORS_NONE){
+        display_help();
         exit(-1);
     }      
 

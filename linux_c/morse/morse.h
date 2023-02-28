@@ -50,6 +50,7 @@
 #endif
 
 enum {
+    MORS_NONE,
     MORS_ENCO,
     MORS_DECO
 };

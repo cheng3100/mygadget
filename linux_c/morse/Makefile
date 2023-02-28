@@ -17,26 +17,33 @@ LIBS=-lm -lconfuse -lrt
 
 DEPS = morse.h
 
-#TODO makefile build into standalone path
+#^TODO makefile build into standalone path
+# see https://codereview.stackexchange.com/questions/74136/makefile-that-places-object-files-into-an-alternate-directory-bin for a good reference
+.PHONY: clean morse install all
+SRC= morse.c decode.c encode.c process_command_line.c process_file.c
+BUILDDIR=build
 
-# OBJ = morse.o display_morse.o process_command_line.o process_config_file.o process_file.o
-OBJ = morse.o decode.o encode.o process_command_line.o process_file.o
+OBJ = $(SRC:%.c=$(BUILDDIR)/%.o)
+TARGET_NAME = morse
+TARGET=$(TARGET_NAME:%=$(BUILDDIR)/%)
 
+# by default makefile will build the first target
+morse:$(TARGET)
 
-%.o: %.c $(DEPS)
+$(BUILDDIR):
+	mkdir $(BUILDDIR)
+
+$(BUILDDIR)/%.o: %.c $(DEPS) | $(BUILDDIR)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-morse: $(OBJ)
+$(TARGET): $(OBJ)
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS) $(LIBS)
 
-.PHONY: clean
 
 clean:
-	/bin/rm -f *.o *~ core morse
-
-.PHONY: install
+	rm -rf $(BUILDDIR)
 
 install:
-	/bin/cp morse /usr/local/bin/morse
+	/bin/cp $(TARGET) /usr/local/bin/morse
 
-all: clean morse 
+all: clean morse
