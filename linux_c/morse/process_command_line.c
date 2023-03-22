@@ -103,8 +103,8 @@ void process_command_line(int argc, char *argv[], struct start_options *options)
      * Some final checks, file name must be set or it's an error, 
      * Farnsworth timing only used below 18 WPM
      */
-    if (options->filename == NULL 
-        || options->message == NULL
+    if ((options->filename == NULL 
+        && options->message == NULL)
         || options->mode == MORS_NONE){
         display_help();
         exit(-1);
