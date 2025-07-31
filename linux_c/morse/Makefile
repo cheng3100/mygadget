@@ -7,7 +7,7 @@ endif
 
 CC=/usr/bin/gcc
 # Always be pedantic on errors
-CFLAGS=-I. -Wall -pthread
+CFLAGS=-I. -Wall -pthread -pg
 LDFLAGS=-L/usr/local/lib
 
 # LIBS=-lm -lconfuse -lpigpiod_if2 -lrt
