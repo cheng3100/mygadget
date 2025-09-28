@@ -1,2 +1,9 @@
-Use this project to download blog as markdown file from zhihu `https://github.com/chenluda/zhihu-download`. It support to use the firefox plugin to to this.
-But the result md file's img link still be the web link. So add this script to download it to local and replace all the img link inside md file
+# record
+
+# tech doc
+Also backup on `$NAS/work/tech_doc`
+	- zhihu blog
+
+# video 
+using 
+
