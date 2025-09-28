@@ -44,15 +44,15 @@ The `function_graph` tracer captures **both entry and exit events** with timing 
 
 ## Key Differences Summary
 
-| Feature | Function Tracer | Function Graph Tracer |
-|---------|----------------|----------------------|
-| **Entry Events** | ✅ Yes | ✅ Yes |
-| **Exit Events** | ❌ No | ✅ Yes |
-| **Timing Information** | ❌ No | ✅ Yes (duration) |
-| **Call Hierarchy** | ❌ No | ✅ Yes (indentation) |
-| **Performance Impact** | Lower | Higher |
-| **Trace File Size** | Smaller | Larger |
-| **Analysis Complexity** | Simpler | More detailed |
+| Feature                 | Function Tracer | Function Graph Tracer |
+|---------                |---------------- |---------------------- |
+| **Entry Events**        | ✅ Yes          | ✅ Yes                |
+| **Exit Events**         | ❌ No           | ✅ Yes                |
+| **Timing Information**  | ❌ No           | ✅ Yes (duration)     |
+| **Call Hierarchy**      | ❌ No           | ✅ Yes (indentation)  |
+| **Performance Impact**  | Lower           | Higher                |
+| **Trace File Size**     | Smaller         | Larger                |
+| **Analysis Complexity** | Simpler         | More detailed         |
 
 ## Performance Impact
 
